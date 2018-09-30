@@ -88,18 +88,18 @@
 
 
 
-<meta name="description" content="ThreadPoolExecutor​    在多线程的编程环境下, 为了更好的控制线程的数量和状态, 提升性能和吞吐量, 通常会用到线程池, 接下来介绍JDK里的ThreadPoolExecutor线程池(下面简称为TPE). ​    首先, TPE的继承关系为:12345a1=&amp;gt;operation: Executora2=&amp;gt;operation: ExecutorServicea3">
+<meta name="description" content="ThreadPoolExecutor​    在多线程的编程环境下, 为了更好的控制线程的数量和状态, 提升性能和吞吐量, 通常会用到线程池, 接下来介绍JDK里的ThreadPoolExecutor线程池(下面简称为TPE). ​    首先, TPE的继承关系为:    ​    Executor接口只有一个void execute(Runnable command) 方法, Executor">
 <meta name="keywords" content="线程池">
 <meta property="og:type" content="article">
 <meta property="og:title" content="L&#39;s Blog">
 <meta property="og:url" content="http://blog.duriamuk.top/2018/09/28/ThreadPoolExecutor/index.html">
 <meta property="og:site_name" content="L&#39;s Blog">
-<meta property="og:description" content="ThreadPoolExecutor​    在多线程的编程环境下, 为了更好的控制线程的数量和状态, 提升性能和吞吐量, 通常会用到线程池, 接下来介绍JDK里的ThreadPoolExecutor线程池(下面简称为TPE). ​    首先, TPE的继承关系为:12345a1=&amp;gt;operation: Executora2=&amp;gt;operation: ExecutorServicea3">
+<meta property="og:description" content="ThreadPoolExecutor​    在多线程的编程环境下, 为了更好的控制线程的数量和状态, 提升性能和吞吐量, 通常会用到线程池, 接下来介绍JDK里的ThreadPoolExecutor线程池(下面简称为TPE). ​    首先, TPE的继承关系为:    ​    Executor接口只有一个void execute(Runnable command) 方法, Executor">
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:updated_time" content="2018-09-29T16:22:23.947Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="L&#39;s Blog">
-<meta name="twitter:description" content="ThreadPoolExecutor​    在多线程的编程环境下, 为了更好的控制线程的数量和状态, 提升性能和吞吐量, 通常会用到线程池, 接下来介绍JDK里的ThreadPoolExecutor线程池(下面简称为TPE). ​    首先, TPE的继承关系为:12345a1=&amp;gt;operation: Executora2=&amp;gt;operation: ExecutorServicea3">
+<meta name="twitter:description" content="ThreadPoolExecutor​    在多线程的编程环境下, 为了更好的控制线程的数量和状态, 提升性能和吞吐量, 通常会用到线程池, 接下来介绍JDK里的ThreadPoolExecutor线程池(下面简称为TPE). ​    首先, TPE的继承关系为:    ​    Executor接口只有一个void execute(Runnable command) 方法, Executor">
 
 
 
@@ -385,7 +385,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  966
+                  1k
                 </span>
               
 
@@ -411,13 +411,50 @@
 
       
         <h2 id="ThreadPoolExecutor"><a href="#ThreadPoolExecutor" class="headerlink" title="ThreadPoolExecutor"></a>ThreadPoolExecutor</h2><p>​    在多线程的编程环境下, 为了更好的控制线程的数量和状态, 提升性能和吞吐量, 通常会用到线程池, 接下来介绍JDK里的ThreadPoolExecutor线程池(下面简称为TPE).</p>
-<p>​    首先, TPE的继承关系为:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">a1=&gt;operation: Executor</span><br><span class="line">a2=&gt;operation: ExecutorService</span><br><span class="line">a3=&gt;operation: AbstractExecutorService</span><br><span class="line">a4=&gt;operation: ThreadPoolExecutor</span><br><span class="line">a1-&gt;a2-&gt;a3-&gt;a4</span><br></pre></td></tr></table></figure></p>
+<p>​    首先, TPE的继承关系为: </p>
+<div id="flowchart-0" class="flow-chart"></div>
+
 <p>​    Executor接口只有一个void execute(Runnable command) 方法, ExecutorService接口添加了许多重要的方法, 源码如下:</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">ExecutorService</span> <span class="keyword">extends</span> <span class="title">Executor</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 启动一个关闭命令，不再接受新任务</span></span><br><span class="line">    <span class="comment">// 当所有工作队列的任务执行完后，就关闭</span></span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">shutdown</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="comment">// 与shutdown() 的区别是 直接清理工作队列的任务</span></span><br><span class="line">    <span class="comment">// 并返回未执行的任务列表</span></span><br><span class="line">    <span class="function">List&lt;Runnable&gt; <span class="title">shutdownNow</span><span class="params">()</span></span>;</span><br><span class="line">    </span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">isShutdown</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="function"><span class="keyword">boolean</span> <span class="title">isTerminated</span><span class="params">()</span></span>;</span><br><span class="line">    <span class="comment">// 提交任务, 与execute() 的区别是 会返回任务处理结果</span></span><br><span class="line">    &lt;T&gt; <span class="function">Future&lt;T&gt; <span class="title">submit</span><span class="params">(Callable&lt;T&gt; task)</span></span>;</span><br><span class="line">    &lt;T&gt; <span class="function">Future&lt;T&gt; <span class="title">submit</span><span class="params">(Runnable task, T result)</span></span>;</span><br><span class="line">    Future&lt;?&gt; submit(Runnable task);</span><br><span class="line">    <span class="comment">// 批量提交任务</span></span><br><span class="line">    &lt;T&gt; List&lt;Future&lt;T&gt;&gt; invokeAll(Collection&lt;? extends Callable&lt;T&gt;&gt; tasks) <span class="keyword">throws</span> InterruptedException;</span><br><span class="line">    &lt;T&gt; List&lt;Future&lt;T&gt;&gt; invokeAll(Collection&lt;? extends Callable&lt;T&gt;&gt; tasks,</span><br><span class="line">                                  <span class="keyword">long</span> timeout, TimeUnit unit) <span class="keyword">throws</span> InterruptedException;</span><br><span class="line">    &lt;T&gt; <span class="function">T <span class="title">invokeAny</span><span class="params">(Collection&lt;? extends Callable&lt;T&gt;&gt; tasks)</span> <span class="keyword">throws</span> InterruptedException, ExecutionException</span>;</span><br><span class="line">    &lt;T&gt; <span class="function">T <span class="title">invokeAny</span><span class="params">(Collection&lt;? extends Callable&lt;T&gt;&gt; tasks,</span></span></span><br><span class="line"><span class="function"><span class="params">                    <span class="keyword">long</span> timeout, TimeUnit unit)</span> <span class="keyword">throws</span> InterruptedException, ExecutionException, TimeoutException</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>​    TPE作为实现类, 构造出了一个可以将提交的任务用特定数量的工作线程按照流程来处理的线程池, 下面看一下TPE的构造方法, 了解其中都有哪些重要的参数.</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">public</span> <span class="title">ThreadPoolExecutor</span><span class="params">(<span class="keyword">int</span> corePoolSize,  //核心线程池大小</span></span></span><br><span class="line"><span class="function"><span class="params">                          <span class="keyword">int</span> maximumPoolSize,  //最大线程池大小</span></span></span><br><span class="line"><span class="function"><span class="params">                          <span class="keyword">long</span> keepAliveTime,  //工作线程空闲时间</span></span></span><br><span class="line"><span class="function"><span class="params">                          TimeUnit unit,  //空闲时间的单位</span></span></span><br><span class="line"><span class="function"><span class="params">                          BlockingQueue&lt;Runnable&gt; workQueue,  //工作队列</span></span></span><br><span class="line"><span class="function"><span class="params">                          ThreadFactory threadFactory,  //工作线程的创建工厂</span></span></span><br><span class="line"><span class="function"><span class="params">                          RejectedExecutionHandler handler)</span> </span>&#123;  <span class="comment">//任务拒绝策略</span></span><br><span class="line">    <span class="keyword">if</span> (corePoolSize &lt; <span class="number">0</span> ||</span><br><span class="line">        maximumPoolSize &lt;= <span class="number">0</span> ||</span><br><span class="line">        maximumPoolSize &lt; corePoolSize ||</span><br><span class="line">        keepAliveTime &lt; <span class="number">0</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> IllegalArgumentException();</span><br><span class="line">    <span class="keyword">if</span> (workQueue == <span class="keyword">null</span> || threadFactory == <span class="keyword">null</span> || handler == <span class="keyword">null</span>)</span><br><span class="line">        <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</span><br><span class="line">    <span class="keyword">this</span>.corePoolSize = corePoolSize;</span><br><span class="line">    <span class="keyword">this</span>.maximumPoolSize = maximumPoolSize;</span><br><span class="line">    <span class="keyword">this</span>.workQueue = workQueue;</span><br><span class="line">    <span class="keyword">this</span>.keepAliveTime = unit.toNanos(keepAliveTime);</span><br><span class="line">    <span class="keyword">this</span>.threadFactory = threadFactory;</span><br><span class="line">    <span class="keyword">this</span>.handler = handler;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>​    任务提交到线程池的时候, 先判断工作线程的数量是否到达核心</p>
-<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br></pre></td><td class="code"><pre><span class="line"><span class="comment">//Worker和Task的区别，Worker是当前线程池中的线程，而task虽然是runnable，但是并没有真正执行，只是被Worker调用了run方法</span></span><br><span class="line"><span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">execute</span><span class="params">(Runnable command)</span> </span>&#123;</span><br><span class="line">        <span class="keyword">if</span> (command == <span class="keyword">null</span>)</span><br><span class="line">            <span class="keyword">throw</span> <span class="keyword">new</span> NullPointerException();</span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment">         * 如果当前的线程数小于核心线程池的大小，根据现有的线程作为第一个Worker运行的线程，</span></span><br><span class="line"><span class="comment">         * 新建一个Worker，addWorker自动的检查当前线程池的状态和Worker的数量，</span></span><br><span class="line"><span class="comment">         * 防止线程池在不能添加线程的状态下添加线程</span></span><br><span class="line"><span class="comment">         *</span></span><br><span class="line"><span class="comment">         * 如果线程入队成功，然后还是要进行double-check的，因为线程池在入队之后状态是可能会发生变化的</span></span><br><span class="line"><span class="comment">         * </span></span><br><span class="line"><span class="comment">         * 如果task不能入队(队列满了)，这时候尝试增加一个新线程，如果增加失败那么当前的线程池状态变化了或者线程池已经满了</span></span><br><span class="line"><span class="comment">         * 然后拒绝task</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">int</span> c = ctl.get();</span><br><span class="line">        <span class="comment">//当前的Worker的数量小于核心线程池大小时，新建一个Worker。</span></span><br><span class="line">        <span class="keyword">if</span> (workerCountOf(c) &lt; corePoolSize) &#123; </span><br><span class="line">            <span class="keyword">if</span> (addWorker(command, <span class="keyword">true</span>))</span><br><span class="line">                <span class="keyword">return</span>;</span><br><span class="line">            c = ctl.get();</span><br><span class="line">        &#125;</span><br><span class="line">        </span><br><span class="line">        <span class="keyword">if</span> (isRunning(c) &amp;&amp; workQueue.offer(command)) &#123;</span><br><span class="line">            <span class="keyword">int</span> recheck = ctl.get();</span><br><span class="line">            <span class="keyword">if</span> (! isRunning(recheck) &amp;&amp; remove(command))  <span class="comment">//recheck防止线程池状态的突变，如果突变，那么将reject线程，防止workQueue中增加新线程</span></span><br><span class="line">                reject(command);</span><br><span class="line">            <span class="keyword">else</span> <span class="keyword">if</span> (workerCountOf(recheck) == <span class="number">0</span>)  <span class="comment">//上下两个操作都有addWorker的操作，但是如果在workQueue.offer的时候Worker变为0，</span></span><br><span class="line">                                                   <span class="comment">//那么将没有Worker执行新的task，所以增加一个Worker.</span></span><br><span class="line">                addWorker(<span class="keyword">null</span>, <span class="keyword">false</span>);</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="comment">//如果workQueue满了，那么这时候可能还没到线程池的maxnum，所以尝试增加一个Worker</span></span><br><span class="line">        <span class="keyword">else</span> <span class="keyword">if</span> (!addWorker(command, <span class="keyword">false</span>))</span><br><span class="line">            reject(command);  <span class="comment">//如果Worker数量到达上限，那么就拒绝此线程</span></span><br><span class="line">    &#125;</span><br></pre></td></tr></table></figure>
+<p><code>`</code>java<br>//Worker和Task的区别，Worker是当前线程池中的线程，而task虽然是runnable，但是并没有真正执行，只是被Worker调用了run方法<br>public void execute(Runnable command) {<br>        if (command == null)<br>            throw new NullPointerException();<br>        /*</p>
+<pre><code>     * 如果当前的线程数小于核心线程池的大小，根据现有的线程作为第一个Worker运行的线程，
+     * 新建一个Worker，addWorker自动的检查当前线程池的状态和Worker的数量，
+     * 防止线程池在不能添加线程的状态下添加线程
+     *
+     * 如果线程入队成功，然后还是要进行double-check的，因为线程池在入队之后状态是可能会发生变化的
+     * 
+     * 如果task不能入队(队列满了)，这时候尝试增加一个新线程，如果增加失败那么当前的线程池状态变化了或者线程池已经满了
+     * 然后拒绝task
+     */
+    int c = ctl.get();
+    //当前的Worker的数量小于核心线程池大小时，新建一个Worker。
+    if (workerCountOf(c) &lt; corePoolSize) { 
+        if (addWorker(command, true))
+            return;
+        c = ctl.get();
+    }
+
+    if (isRunning(c) &amp;&amp; workQueue.offer(command)) {
+        int recheck = ctl.get();
+        if (! isRunning(recheck) &amp;&amp; remove(command))  //recheck防止线程池状态的突变，如果突变，那么将reject线程，防止workQueue中增加新线程
+            reject(command);
+        else if (workerCountOf(recheck) == 0)  //上下两个操作都有addWorker的操作，但是如果在workQueue.offer的时候Worker变为0，
+                                               //那么将没有Worker执行新的task，所以增加一个Worker.
+            addWorker(null, false);
+    }
+    //如果workQueue满了，那么这时候可能还没到线程池的maxnum，所以尝试增加一个Worker
+    else if (!addWorker(command, false))
+        reject(command);  //如果Worker数量到达上限，那么就拒绝此线程
+}
+</code></pre><p><code>`</code><script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.7/raphael.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/flowchart/1.6.5/flowchart.min.js"></script><textarea id="flowchart-0-code" style="display: none">a1=>operation: Executor
+a2=>operation: ExecutorService
+a3=>operation: AbstractExecutorService
+a4=>operation: ThreadPoolExecutor
+a1->a2->a3->a4</textarea><textarea id="flowchart-0-options" style="display: none">{"scale":1,"line-width":2,"line-length":50,"text-margin":10,"font-size":12}</textarea><script>  var code = document.getElementById("flowchart-0-code").value;  var options = JSON.parse(decodeURIComponent(document.getElementById("flowchart-0-options").value));  var diagram = flowchart.parse(code);  diagram.drawSVG("flowchart-0", options);</script></p>
+
       
     </div>
     
@@ -747,7 +784,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">966</span>
+    <span title="Site words total count">1k</span>
   
 </div>
 
@@ -1392,5 +1429,5 @@
      prettyPrint();
    })    
   </script> -->
-<script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"model":{"jsonPath":"/live2dw/assets/wanko.model.json"},"display":{"position":"right","width":100,"height":200},"mobile":{"show":true},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
+<script src="/live2dw/lib/L2Dwidget.min.js?0c58a1486de42ac6cc1c59c7d98ae887"></script><script>L2Dwidget.init({"model":{"jsonPath":"live2d-widget-model-wanko"},"display":{"position":"right","width":100,"height":200},"mobile":{"show":true},"log":false,"pluginJsPath":"lib/","pluginModelPath":"assets/","pluginRootPath":"live2dw/","tagMode":false});</script></body>
 </html>
