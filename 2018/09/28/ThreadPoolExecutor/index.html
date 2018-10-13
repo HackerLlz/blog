@@ -98,7 +98,7 @@
 <meta property="og:locale" content="zh-Hans">
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/a5e229e1gy1fvrm89jxtuj20my0hojre.jpg">
 <meta property="og:image" content="http://ww1.sinaimg.cn/large/a5e229e1gy1fvrq9dcofcj20qn0aiabz.jpg">
-<meta property="og:updated_time" content="2018-10-10T06:44:59.558Z">
+<meta property="og:updated_time" content="2018-10-13T07:50:35.644Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ThreadPoolExecutor">
 <meta name="twitter:description" content="ThreadPoolExecutor的族谱　　在多线程的编程环境下, 为了更好的控制线程的数量和状态, 提升性能和吞吐量, 通常会用到线程池, 接下来介绍JDK里的ThreadPoolExecutor线程池. 　　首先, ThreadPoolExecutor的继承关系为:    　　Executor接口只有一个void execute(Runnable command) 方法, ExecutorS">
@@ -388,7 +388,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  3.8k
+                  3.9k
                 </span>
               
 
@@ -463,22 +463,18 @@
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> Runnable <span class="title">getTask</span><span class="params">()</span> </span>&#123;</span><br><span class="line">    <span class="comment">// timeOut变量的值表示上次从阻塞队列中取任务时是否超时</span></span><br><span class="line">    <span class="keyword">boolean</span> timedOut = <span class="keyword">false</span>; </span><br><span class="line">    <span class="keyword">for</span> (;;) &#123;</span><br><span class="line">        <span class="keyword">int</span> c = ctl.get();</span><br><span class="line">        <span class="keyword">int</span> rs = runStateOf(c);</span><br><span class="line">        <span class="comment">/* </span></span><br><span class="line"><span class="comment">         * 同addWorker，当线程池状态变化时，满足条件则将workerCount减1并返回null</span></span><br><span class="line"><span class="comment">         * 因为如果当前线程池状态的值是SHUTDOWN或以上时，不允许再向阻塞队列中添加任务。</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">if</span> (rs &gt;= SHUTDOWN &amp;&amp; (rs &gt;= STOP || workQueue.isEmpty())) &#123;</span><br><span class="line">            decrementWorkerCount();</span><br><span class="line">            <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">int</span> wc = workerCountOf(c);</span><br><span class="line">        <span class="comment">// timed变量用于判断是否需要进行超时控制；</span></span><br><span class="line">        <span class="comment">// 这就是allowCoreThreadTimeOut的作用，若设为false，则对于超过核心线程数量的线程，需要进行超时控制</span></span><br><span class="line">        <span class="keyword">boolean</span> timed = allowCoreThreadTimeOut || wc &gt; corePoolSize;</span><br><span class="line">        <span class="comment">/*</span></span><br><span class="line"><span class="comment">         * wc &gt; maximumPoolSize的情况是因为可能在此方法执行阶段同时执行了setMaximumPoolSize方法；</span></span><br><span class="line"><span class="comment">         * timed &amp;&amp; timedOut 如果为true，表示当前操作需要进行超时控制，并且上次从阻塞队列中获取任务发生了超时。</span></span><br><span class="line"><span class="comment">         * 接下来判断，如果有效线程数量大于1，或者阻塞队列是空的，那么尝试将workerCount减1；</span></span><br><span class="line"><span class="comment">         * 如果减1失败，则返回重试。</span></span><br><span class="line"><span class="comment">         * 如果wc == 1时，也就说明当前线程是线程池中唯一的一个线程了。</span></span><br><span class="line"><span class="comment">         */</span></span><br><span class="line">        <span class="keyword">if</span> ((wc &gt; maximumPoolSize || (timed &amp;&amp; timedOut))</span><br><span class="line">            &amp;&amp; (wc &gt; <span class="number">1</span> || workQueue.isEmpty())) &#123;</span><br><span class="line">            <span class="keyword">if</span> (compareAndDecrementWorkerCount(c))</span><br><span class="line">                <span class="keyword">return</span> <span class="keyword">null</span>;</span><br><span class="line">            <span class="keyword">continue</span>;</span><br><span class="line">        &#125;</span><br><span class="line">        <span class="keyword">try</span> &#123;</span><br><span class="line">            <span class="comment">/*</span></span><br><span class="line"><span class="comment">             * 根据timed来判断，如果为true，则通过阻塞队列的poll方法进行超时控制，如果在keepAliveTime时间内没有获取到任务，则返回null；</span></span><br><span class="line"><span class="comment">             * 否则调用take方法，如果这时队列为空，则take方法会阻塞直到队列不为空。（会被shutdown方法的interruptIdleWorkers方法中断阻塞，不会造成SHUTDOWN状态下无限阻塞）</span></span><br><span class="line"><span class="comment">             */</span></span><br><span class="line">            Runnable r = timed ?</span><br><span class="line">                workQueue.poll(keepAliveTime, TimeUnit.NANOSECONDS) :</span><br><span class="line">                workQueue.take();</span><br><span class="line">            <span class="keyword">if</span> (r != <span class="keyword">null</span>)</span><br><span class="line">                <span class="keyword">return</span> r;</span><br><span class="line">            <span class="comment">// 如果 r == null，说明已经超时，timedOut设置为true</span></span><br><span class="line">            timedOut = <span class="keyword">true</span>;</span><br><span class="line">        &#125; <span class="keyword">catch</span> (InterruptedException retry) &#123;</span><br><span class="line">            <span class="comment">// 如果获取任务时当前线程发生了中断，则设置timedOut为false并返回循环重试</span></span><br><span class="line">            timedOut = <span class="keyword">false</span>;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <p>　　shutdown方法会调用interruptIdleWorkers来中断空闲线程。工作线程处理任务时会进行lock，interruptIdleWorkers在进行中断时会使用tryLock来判断该工作线程是否正在处理任务，如果tryLock返回true，说明该工作线程当前未执行任务，这时才可以被中断。shutdownNow方法则调用interruptWorkers方法中断所有线程。</p>
 <p>　　getTask方法返回null时，在runWorker方法中会跳出while循环，然后会执行processWorkerExit方法，里面会判断线程池的状态变化等，来进行workerCount的增减等操作，然后工作线程等着被jvm销毁。</p>
-<p>　　总结：以上就是整个线程池的工作流程，从execute方法开始提交任务（四种情况），worker使用ThreadFactory创建新的线程thread作为自己的属性，thread运行worker的run方法，其中调用runWorker通过getTask获取任务（空闲线程在此阻塞），然后执行任务，如果getTask返回null，进入processWorkerExit方法，woker销毁。期间线程池的状态一直可能发生变化。</p>
 <h2 id="线程池的分类"><a href="#线程池的分类" class="headerlink" title="线程池的分类"></a>线程池的分类</h2><p>　　创建线程池可以new一个ThreadPoolExecutor，这样可以自定义参数（阿里推荐的方法）；对于一般的场景，Executors 类提供了创建各种已经配好参数的线程池的方法：</p>
 <ol>
-<li><p>newCachedThreadPool() – SynchronousQueue: 创建一个可缓存线程池, 是可以无限扩大的线程池, 60s回收空闲线程, 适用于服务器负载较轻, 执行很多短期异步任务。（corePoolSize = 0，maximumPoolSize = Integer.Max，keepAliveTime = 60）</p>
-</li>
-<li><p>newFixedThreadPool() – LinkedBlockingQueue: 创建一个定长线程, 适用于可以预测线程数量的业务中, 或者服务器负载较重, 对当前线程数量进行限制。（corePoolSize = maximumPoolSize）</p>
-</li>
-<li><p>newScheduledThreadPool() – DelayedWorkQueue: 创建一个定长线程池，支持定时和周期性任务。(详见: 我的另一篇文章””, 链接: )</p>
-</li>
-<li><p>newSingleThreadExecutor() – LinkedBlockingQueue: 创建一个单线程化的线程池，适用于需要保证顺序(FIFO, LIFO)执行各个任务，并且在任意时间点，不会有多个线程是活动的场景。(corePoolSize = maximumPoolSize = 1)</p>
-</li>
-<li><p>newWorkStealingPool() – LinkedBlockingQueue: 创建一个工作窃取线程池, 每个线程都有要自己处理的队列, 如果其中的线程完成自己队列中的任务, 那么它可以去其他队列中获取任务去执行。创建当前可用cpu数量的线程来并行执行, 适用于大耗时的操作。(相对于上面的线程池，newWorkStealingPool 用的是ForkJoinPool，有多个阻塞队列和工作线程池）</p>
-</li>
+<li>newCachedThreadPool() – SynchronousQueue: 创建一个可缓存线程池, 是可以无限扩大的线程池, 60s回收空闲线程, 适用于服务器负载较轻, 执行很多短期异步任务。（corePoolSize = 0，maximumPoolSize = Integer.Max，keepAliveTime = 60）</li>
+<li>newFixedThreadPool() – LinkedBlockingQueue: 创建一个定长线程, 适用于可以预测线程数量的业务中, 或者服务器负载较重, 对当前线程数量进行限制。（corePoolSize = maximumPoolSize）</li>
+<li>newScheduledThreadPool() – DelayedWorkQueue: 创建一个定长线程池，支持定时和周期性任务。(详见: 我的另一篇文章””, 链接: )</li>
+<li>newSingleThreadExecutor() – LinkedBlockingQueue: 创建一个单线程化的线程池，适用于需要保证顺序(FIFO, LIFO)执行各个任务，并且在任意时间点，不会有多个线程是活动的场景。(corePoolSize = maximumPoolSize = 1)</li>
+<li>newWorkStealingPool() – LinkedBlockingQueue: 创建一个工作窃取线程池, 每个线程都有要自己处理的队列, 如果其中的线程完成自己队列中的任务, 那么它可以去其他队列中获取任务去执行。创建当前可用cpu数量的线程来并行执行, 适用于大耗时的操作。(相对于上面的线程池，newWorkStealingPool 用的是ForkJoinPool，有多个阻塞队列和工作线程池）</li>
 </ol>
-<h2 id="参考链接"><a href="#参考链接" class="headerlink" title="参考链接"></a>参考链接</h2><p>掘金：深入理解 Java 线程池：ThreadPoolExecutor：<a href="https://juejin.im/entry/58fada5d570c350058d3aaad" target="_blank" rel="noopener">https://juejin.im/entry/58fada5d570c350058d3aaad</a></p>
-<p>简书：深入理解java线程池—ThreadPoolExecutor：<a href="https://www.jianshu.com/p/ade771d2c9c0" target="_blank" rel="noopener">https://www.jianshu.com/p/ade771d2c9c0</a></p>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>　　以上就是整个线程池的工作流程，从execute方法开始提交任务（四种情况），worker使用ThreadFactory创建新的线程thread作为自己的属性，thread运行worker的run方法，其中调用runWorker通过getTask获取任务（空闲线程在此阻塞），然后执行任务，如果getTask返回null，进入processWorkerExit方法，woker销毁。期间线程池的状态一直可能发生变化。</p>
+<p>　　不同的线程池参数设置，不同的阻塞队列的类型，不同的task封装，可以有很多不同的线程池种类，适应很多场景。在本博客的”线程池”标签里有更多详细知识可以了解。</p>
+<h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://juejin.im/entry/58fada5d570c350058d3aaad" target="_blank">掘金：深入理解 Java 线程池：ThreadPoolExecutor</a></p>
+<p><a href="https://www.jianshu.com/p/ade771d2c9c0" target="_blank">简书：深入理解java线程池—ThreadPoolExecutor</a></p>
 <p><script src="https://cdnjs.cloudflare.com/ajax/libs/raphael/2.2.7/raphael.min.js"></script><script src="https://cdnjs.cloudflare.com/ajax/libs/flowchart/1.6.5/flowchart.min.js"></script><textarea id="flowchart-0-code" style="display: none">a1=>operation: Executor
 a2=>operation: ExecutorService
 a3=>operation: AbstractExecutorService
@@ -565,10 +561,6 @@ a1->a2->a3->a4</textarea><textarea id="flowchart-0-options" style="display: none
       
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
-            
-              <a href="/2018/09/28/world/" rel="next" title="world">
-                <i class="fa fa-chevron-left"></i> world
-              </a>
             
           </div>
 
@@ -692,7 +684,7 @@ a1->a2->a3->a4</textarea><textarea id="flowchart-0-options" style="display: none
               
                 <a href="/archives/">
               
-                  <span class="site-state-item-count">4</span>
+                  <span class="site-state-item-count">3</span>
                   <span class="site-state-item-name">日志</span>
                 </a>
               </div>
@@ -773,7 +765,7 @@ a1->a2->a3->a4</textarea><textarea id="flowchart-0-options" style="display: none
             
 
             
-              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#ThreadPoolExecutor的族谱"><span class="nav-text">ThreadPoolExecutor的族谱</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#提交任务过程中几个参数的作用"><span class="nav-text">提交任务过程中几个参数的作用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#execute-方法源码分析"><span class="nav-text">execute 方法源码分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#线程池的状态"><span class="nav-text">线程池的状态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#addWorker-方法源码分析"><span class="nav-text">addWorker 方法源码分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#getTask-方法源码分析"><span class="nav-text">getTask 方法源码分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#线程池的分类"><span class="nav-text">线程池的分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考链接"><span class="nav-text">参考链接</span></a></li></ol></div>
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#ThreadPoolExecutor的族谱"><span class="nav-text">ThreadPoolExecutor的族谱</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#提交任务过程中几个参数的作用"><span class="nav-text">提交任务过程中几个参数的作用</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#execute-方法源码分析"><span class="nav-text">execute 方法源码分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#线程池的状态"><span class="nav-text">线程池的状态</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#addWorker-方法源码分析"><span class="nav-text">addWorker 方法源码分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#getTask-方法源码分析"><span class="nav-text">getTask 方法源码分析</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#线程池的分类"><span class="nav-text">线程池的分类</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-text">总结</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#参考"><span class="nav-text">参考</span></a></li></ol></div>
             
 
           </div>
@@ -814,7 +806,7 @@ a1->a2->a3->a4</textarea><textarea id="flowchart-0-options" style="display: none
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">3.8k</span>
+    <span title="Site words total count">6.1k</span>
   
 </div>
 
