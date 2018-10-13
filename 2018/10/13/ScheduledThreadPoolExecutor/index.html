@@ -96,7 +96,7 @@
 <meta property="og:site_name" content="L&#39;s Blog">
 <meta property="og:description" content="schedule方法源码分析　　温馨提示：看完我的另一篇ThreadPoolExecutor再来看这篇会轻松很多。 　　ThreadPoolExecutor中使用execute来提交任务，而ScheduledThreadPoolExecutor使用schedule。区别是，schedule会先把Task封装成ScheduledFutureTask再提交；schedule会直接把任务放入阻塞队列中等">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-10-13T07:53:50.236Z">
+<meta property="og:updated_time" content="2018-10-13T08:15:33.450Z">
 <meta name="twitter:card" content="summary">
 <meta name="twitter:title" content="ScheduledThreadPoolExecutor">
 <meta name="twitter:description" content="schedule方法源码分析　　温馨提示：看完我的另一篇ThreadPoolExecutor再来看这篇会轻松很多。 　　ThreadPoolExecutor中使用execute来提交任务，而ScheduledThreadPoolExecutor使用schedule。区别是，schedule会先把Task封装成ScheduledFutureTask再提交；schedule会直接把任务放入阻塞队列中等">
@@ -436,7 +436,7 @@
 <p>　　siftDown方法：</p>
 <figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line"><span class="function"><span class="keyword">private</span> <span class="keyword">void</span> <span class="title">siftDown</span><span class="params">(<span class="keyword">int</span> k, RunnableScheduledFuture&lt;?&gt; key)</span> </span>&#123;</span><br><span class="line">    <span class="comment">// 根据二叉堆的特性，数组长度除以2，表示取有子节点的索引</span></span><br><span class="line">    <span class="keyword">int</span> half = size &gt;&gt;&gt; <span class="number">1</span>;</span><br><span class="line">    <span class="comment">// 判断索引为k的节点是否有子节点</span></span><br><span class="line">    <span class="keyword">while</span> (k &lt; half) &#123;</span><br><span class="line">        <span class="comment">// 左子节点的索引</span></span><br><span class="line">        <span class="keyword">int</span> child = (k &lt;&lt; <span class="number">1</span>) + <span class="number">1</span>;</span><br><span class="line">        RunnableScheduledFuture&lt;?&gt; c = queue[child];</span><br><span class="line">        <span class="comment">// 右子节点的索引</span></span><br><span class="line">        <span class="keyword">int</span> right = child + <span class="number">1</span>;</span><br><span class="line">        <span class="comment">// 如果有右子节点并且左子节点的延迟时间大于右子节点，取延迟时间最小的节点</span></span><br><span class="line">        <span class="keyword">if</span> (right &lt; size &amp;&amp; c.compareTo(queue[right]) &gt; <span class="number">0</span>)</span><br><span class="line">            c = queue[child = right];</span><br><span class="line">        <span class="comment">// 如果key的延迟时间小于等于c的延迟时间，跳出循环</span></span><br><span class="line">        <span class="keyword">if</span> (key.compareTo(c) &lt;= <span class="number">0</span>)</span><br><span class="line">            <span class="keyword">break</span>;</span><br><span class="line">        <span class="comment">// 设置要移除索引的节点为其子节点</span></span><br><span class="line">        queue[k] = c;</span><br><span class="line">        setIndex(c, k);</span><br><span class="line">        k = child;</span><br><span class="line">    &#125;</span><br><span class="line">    <span class="comment">// 将key放入索引为k的位置</span></span><br><span class="line">    queue[k] = key;</span><br><span class="line">    setIndex(key, k);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
 <h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>　　ScheduledThreadPoolExecutor可以说是在ThreadPoolExecutor上面进行了一些扩展操作，它只是重新包装了任务以及阻塞队列，实现了延迟，周期性执行任务的功能。可用与订单支付限时，周期性订正等任务。</p>
-<p>　　本博客用 rabbitmq 实现了简单的延迟队列的功能，感兴趣详见：</p>
+<p>　　本博客用 rabbitmq 实现了简单的延迟队列的功能，感兴趣详见：<a href="http://blog.duriamuk.top/2018/09/28/DelayQueueByRabbitmq/#more" target="_blank">用Rabbitmq实现延迟队列</a></p>
 <h2 id="参考"><a href="#参考" class="headerlink" title="参考"></a>参考</h2><p><a href="https://www.jianshu.com/p/925dba9f5969" target="_blank">简书：深入理解Java线程池：ScheduledThreadPoolExecutor</a></p>
 <p><a href="https://segmentfault.com/a/1190000011665733" target="_blank">思否：Java调度线程池ScheduledThreadPoolExecutor源码分析</a></p>
 <h2 id=""><a href="#" class="headerlink" title=" "></a> </h2>
@@ -765,7 +765,7 @@
     
       <span class="post-meta-item-text">Site words total count&#58;</span>
     
-    <span title="Site words total count">6.1k</span>
+    <span title="Site words total count">6.2k</span>
   
 </div>
 
