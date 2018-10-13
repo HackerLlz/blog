@@ -21,4 +21,13 @@
         <tag>线程池</tag>
       </tags>
   </entry>
+  <entry>
+    <title><![CDATA[用Rabbitmq实现延迟队列]]></title>
+    <url>%2F2018%2F09%2F28%2FDelayQueueByRabbitmq%2F</url>
+    <content type="text"></content>
+      <tags>
+        <tag>线程池</tag>
+        <tag>消息队列</tag>
+      </tags>
+  </entry>
 </search>
