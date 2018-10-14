@@ -1,2 +1,4 @@
 http://blog.duriamuk.top/2018/10/20/DelayQueueByRabbitmq/
 http://blog.duriamuk.top/2018/10/13/ScheduledThreadPoolExecutor/
+http://blog.duriamuk.top/2018/09/28/ThreadPoolExecutor/
+http://blog.duriamuk.top/2018/09/25/top/
