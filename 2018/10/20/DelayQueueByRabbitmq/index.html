@@ -75,7 +75,7 @@
 
 
 
-  <meta name="keywords" content="Hexo, NexT" />
+  <meta name="keywords" content="线程池,消息队列," />
 
 
 
@@ -88,18 +88,20 @@
 
 
 
-<meta name="description" content="博主小哥哥长得炒鸡帅，赶紧加微信撩呀！">
-<meta name="keywords" content="duriamuk">
+<meta name="description" content="实现原理　　Rabbitmq里设置一个直连交换机，绑定一个缓存队列和一个执行队列，缓存队列设置队列TTL时间，设置死信队列为执行队列；执行队列设置消费接口和方法．消息先发送到缓存队列，TTL到期后变为死信通过交换机重新发送到执行队列进行消费。 死信（DL：Dead Letter）　　Rabbitmq中，消息成为死信的情况有三种：  队列已满，发送的消息无法进入队列； 消息在队列中的TTL（Time">
+<meta name="keywords" content="线程池,消息队列">
 <meta property="og:type" content="article">
-<meta property="og:title" content="公告">
-<meta property="og:url" content="http://blog.duriamuk.top/2018/09/28/top/index.html">
+<meta property="og:title" content="用Rabbitmq实现延迟队列">
+<meta property="og:url" content="http://blog.duriamuk.top/2018/10/20/DelayQueueByRabbitmq/index.html">
 <meta property="og:site_name" content="L&#39;s Blog">
-<meta property="og:description" content="博主小哥哥长得炒鸡帅，赶紧加微信撩呀！">
+<meta property="og:description" content="实现原理　　Rabbitmq里设置一个直连交换机，绑定一个缓存队列和一个执行队列，缓存队列设置队列TTL时间，设置死信队列为执行队列；执行队列设置消费接口和方法．消息先发送到缓存队列，TTL到期后变为死信通过交换机重新发送到执行队列进行消费。 死信（DL：Dead Letter）　　Rabbitmq中，消息成为死信的情况有三种：  队列已满，发送的消息无法进入队列； 消息在队列中的TTL（Time">
 <meta property="og:locale" content="zh-Hans">
-<meta property="og:updated_time" content="2018-10-13T08:21:54.061Z">
+<meta property="og:image" content="http://ww1.sinaimg.cn/large/a5e229e1ly1fw6q1yb1vkj208s0b70t1.jpg">
+<meta property="og:updated_time" content="2018-10-14T12:07:03.924Z">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:title" content="公告">
-<meta name="twitter:description" content="博主小哥哥长得炒鸡帅，赶紧加微信撩呀！">
+<meta name="twitter:title" content="用Rabbitmq实现延迟队列">
+<meta name="twitter:description" content="实现原理　　Rabbitmq里设置一个直连交换机，绑定一个缓存队列和一个执行队列，缓存队列设置队列TTL时间，设置死信队列为执行队列；执行队列设置消费接口和方法．消息先发送到缓存队列，TTL到期后变为死信通过交换机重新发送到执行队列进行消费。 死信（DL：Dead Letter）　　Rabbitmq中，消息成为死信的情况有三种：  队列已满，发送的消息无法进入队列； 消息在队列中的TTL（Time">
+<meta name="twitter:image" content="http://ww1.sinaimg.cn/large/a5e229e1ly1fw6q1yb1vkj208s0b70t1.jpg">
 
 
 
@@ -129,7 +131,7 @@
 
 
 
-  <link rel="canonical" href="http://blog.duriamuk.top/2018/09/28/top/"/>
+  <link rel="canonical" href="http://blog.duriamuk.top/2018/10/20/DelayQueueByRabbitmq/"/>
 
 
 
@@ -137,7 +139,7 @@
 
 <!-- <link href="/js/google-code-prettify/prettify.css" type="text/css" rel="stylesheet" /> -->
 
-  <title>公告 | L's Blog</title>
+  <title>用Rabbitmq实现延迟队列 | L's Blog</title>
   
 
 
@@ -310,7 +312,7 @@
   
   
   <div class="post-block">
-    <link itemprop="mainEntityOfPage" href="http://blog.duriamuk.top/2018/09/28/top/">
+    <link itemprop="mainEntityOfPage" href="http://blog.duriamuk.top/2018/10/20/DelayQueueByRabbitmq/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="name" content="L">
@@ -327,16 +329,12 @@
 
         
         
-          <h1 class="post-title" itemprop="name headline">公告</h1>
+          <h1 class="post-title" itemprop="name headline">用Rabbitmq实现延迟队列</h1>
         
 
         <div class="post-meta">
           <span class="post-time">
 
-            
-              <i class="fa fa-thumb-tack"></i>
-              <font color=7D26CD>置顶</font>
-              <span class="post-meta-divider">|</span>
             
             
             
@@ -346,8 +344,8 @@
               
                 <span class="post-meta-item-text">发表于</span>
               
-              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-09-28T23:39:14+08:00">
-                2018-09-28
+              <time title="创建于" itemprop="dateCreated datePublished" datetime="2018-10-20T16:10:08+08:00">
+                2018-10-20
               </time>
             
 
@@ -364,7 +362,7 @@
 
           
           
-             <span id="/2018/09/28/top/" class="leancloud_visitors" data-flag-title="公告">
+             <span id="/2018/10/20/DelayQueueByRabbitmq/" class="leancloud_visitors" data-flag-title="用Rabbitmq实现延迟队列">
                <span class="post-meta-divider">|</span>
                <span class="post-meta-item-icon">
                  <i class="fa fa-eye"></i>
@@ -389,7 +387,7 @@
                   <span class="post-meta-item-text">字数统计&#58;</span>
                 
                 <span title="字数统计">
-                  17
+                  1.5k
                 </span>
               
 
@@ -414,7 +412,30 @@
       
 
       
-        <p>　　博主小哥哥长得炒鸡帅，赶紧加微信撩呀！</p>
+        <h2 id="实现原理"><a href="#实现原理" class="headerlink" title="实现原理"></a>实现原理</h2><p>　　Rabbitmq里设置一个直连交换机，绑定一个缓存队列和一个执行队列，缓存队列设置队列TTL时间，设置死信队列为执行队列；执行队列设置消费接口和方法．消息先发送到缓存队列，TTL到期后变为死信通过交换机重新发送到执行队列进行消费。</p>
+<h2 id="死信（DL：Dead-Letter）"><a href="#死信（DL：Dead-Letter）" class="headerlink" title="死信（DL：Dead Letter）"></a>死信（DL：Dead Letter）</h2><p>　　Rabbitmq中，消息成为死信的情况有三种：</p>
+<ol>
+<li>队列已满，发送的消息无法进入队列；</li>
+<li>消息在队列中的TTL（Time To Live）到期；</li>
+<li>消息消费失败超过一定次数。</li>
+</ol>
+<p>　　对于死信，一个队列可以将本队列的死信转发到自定义的队列中再做处理（即设置死信队列），人工处理或者建立消费者处理都行。</p>
+<p>　　本文的实现原理就是运用了死信的第二种情况，实现了消息延迟处理的效果。</p>
+<h2 id="Demo代码实例"><a href="#Demo代码实例" class="headerlink" title="Demo代码实例"></a>Demo代码实例</h2><p>　　下载安装启动Rabbitmq服务；博主用的是Idea，创建Spring Initializr，勾选Web和RabbitMq两个集成。创建的文件如下图：</p>
+<p><img src="http://ww1.sinaimg.cn/large/a5e229e1ly1fw6q1yb1vkj208s0b70t1.jpg" alt=""></p>
+<p>　　生产者和消费者Service，Rabbitmq配置文件，测试类。</p>
+<h3 id="Rabbitmq配置文件"><a href="#Rabbitmq配置文件" class="headerlink" title="Rabbitmq配置文件"></a>Rabbitmq配置文件</h3><p>　　配置交换机，队列：</p>
+<figure class="highlight xml"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br></pre></td><td class="code"><pre><span class="line">&lt;?xml version="1.0" encoding="UTF-8"?&gt;</span><br><span class="line"><span class="tag">&lt;<span class="name">beans</span> <span class="attr">xmlns</span>=<span class="string">"http://www.springframework.org/schema/beans"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:xsi</span>=<span class="string">"http://www.w3.org/2001/XMLSchema-instance"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xmlns:rabbit</span>=<span class="string">"http://www.springframework.org/schema/rabbit"</span></span></span><br><span class="line"><span class="tag">       <span class="attr">xsi:schemaLocation</span>=<span class="string">"http://www.springframework.org/schema/beans</span></span></span><br><span class="line"><span class="tag"><span class="string">        http://www.springframework.org/schema/beans/spring-beans.xsd</span></span></span><br><span class="line"><span class="tag"><span class="string">        http://www.springframework.org/schema/rabbit</span></span></span><br><span class="line"><span class="tag"><span class="string">        http://www.springframework.org/schema/rabbit/spring-rabbit.xsd"</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- El的内容在application.properties中配置 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">rabbit:connection-factory</span> <span class="attr">id</span>=<span class="string">"rabbitConnectionFactory"</span> <span class="attr">host</span>=<span class="string">"$&#123;rabbitmq.host&#125;"</span></span></span><br><span class="line"><span class="tag">                               <span class="attr">username</span>=<span class="string">"$&#123;rabbitmq.username&#125;"</span> <span class="attr">password</span>=<span class="string">"$&#123;rabbitmq.password&#125;"</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- 默认已经有 --&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--&lt;rabbit:template id="rabbitTemplate" connection-factory="rabbitConnectionFactory"/&gt;--&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--&lt;rabbit:admin connection-factory="rabbitConnectionFactory"/&gt;--&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- 用来把消息转化成json, 不配置时默认为java序列化 --&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--&lt;bean id="jsonMessageConverter" class="org.springframework.amqp.support.converter.Jackson2JsonMessageConverter" /&gt;--&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- 缓存队列 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">rabbit:queue</span> <span class="attr">name</span>=<span class="string">"cache.queue"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">rabbit:queue-arguments</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">entry</span> <span class="attr">key</span>=<span class="string">"x-dead-letter-exchange"</span> <span class="attr">value</span>=<span class="string">"delay.exchange"</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">entry</span> <span class="attr">key</span>=<span class="string">"x-dead-letter-routing-key"</span> <span class="attr">value</span>=<span class="string">"execute.queue"</span>/&gt;</span></span><br><span class="line">            <span class="comment">&lt;!-- 设置队列延迟时间, 单个消息设置会出现优先级问题 --&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">entry</span> <span class="attr">key</span>=<span class="string">"x-message-ttl"</span> <span class="attr">value</span>=<span class="string">"5000"</span> <span class="attr">value-type</span>=<span class="string">"java.lang.Long"</span> /&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">rabbit:queue-arguments</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">rabbit:queue</span>&gt;</span></span><br><span class="line">    <span class="comment">&lt;!-- 执行队列 --&gt;</span></span><br><span class="line">    <span class="tag">&lt;<span class="name">rabbit:queue</span> <span class="attr">name</span>=<span class="string">"execute.queue"</span>/&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="tag">&lt;<span class="name">rabbit:direct-exchange</span> <span class="attr">name</span>=<span class="string">"delay.exchange"</span>&gt;</span></span><br><span class="line">        <span class="tag">&lt;<span class="name">rabbit:bindings</span>&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">rabbit:binding</span> <span class="attr">queue</span>=<span class="string">"cache.queue"</span> <span class="attr">key</span>=<span class="string">"cache.queue"</span>/&gt;</span></span><br><span class="line">            <span class="tag">&lt;<span class="name">rabbit:binding</span> <span class="attr">queue</span>=<span class="string">"execute.queue"</span> <span class="attr">key</span>=<span class="string">"execute.queue"</span>/&gt;</span></span><br><span class="line">        <span class="tag">&lt;/<span class="name">rabbit:bindings</span>&gt;</span></span><br><span class="line">    <span class="tag">&lt;/<span class="name">rabbit:direct-exchange</span>&gt;</span></span><br><span class="line"></span><br><span class="line">    <span class="comment">&lt;!-- 消费者监听, 使用注解配置即可 --&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--&lt;bean id="mssageConsumer" class="com.delayrabbitmq.demo.service.impl.MessageConsumer"&gt;&lt;/bean&gt;--&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--&lt;rabbit:listener-container&gt;--&gt;</span></span><br><span class="line">        <span class="comment">&lt;!--&lt;rabbit:listener queues="execute.queue"--&gt;</span></span><br><span class="line">                         <span class="comment">&lt;!--ref="mssageConsumer"  method="onMessage"/&gt;--&gt;</span></span><br><span class="line">    <span class="comment">&lt;!--&lt;/rabbit:listener-container&gt;--&gt;</span></span><br><span class="line"></span><br><span class="line"><span class="tag">&lt;/<span class="name">beans</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>　　过程：MessageProducerService发送消息到delay.exchange，以key “cache.queue” 发送到缓存队列，缓存队列设有5s的TTL以及死信的交换机和key。消息在缓存队列中TTL过期后，会通过delay.exchange 以key “execute.queue”发送到执行队列，MessageConsumerService接口监听执行队列，有消息就进行消费。</p>
+<p>　　PS：TTL分为队列TTL和单独消息的TTL，本文设置的是队列的TTL，即每条消息进入队列是相同的TTL；倘若设置单独消息的TTL，及差异化每条消息进入队列时的TTL，则实现不了。原因是消息队列中的队列并不像DelayedWorkQueue一样能进行最小堆排序，即TTL较大的消息可能出现在队头，导致延迟时间的错误。</p>
+<h3 id="MessageProducerService接口"><a href="#MessageProducerService接口" class="headerlink" title="MessageProducerService接口"></a>MessageProducerService接口</h3><p>　　消息发送的接口：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.delayrabbitmq.demo.service;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">MessageProducerService</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">sendMessage</span><span class="params">(Object message)</span></span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.delayrabbitmq.demo.service.impl;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.delayrabbitmq.demo.service.MessageProducerService;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.Logger;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.LoggerFactory;</span><br><span class="line"><span class="keyword">import</span> org.springframework.amqp.core.MessageDeliveryMode;</span><br><span class="line"><span class="keyword">import</span> org.springframework.amqp.rabbit.core.RabbitTemplate;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Service;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.text.SimpleDateFormat;</span><br><span class="line"><span class="keyword">import</span> java.util.Date;</span><br><span class="line"><span class="keyword">import</span> java.util.Random;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Service</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MessageProducerServiceImpl</span> <span class="keyword">implements</span> <span class="title">MessageProducerService</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Logger logger = LoggerFactory.getLogger(MessageProducerServiceImpl.class);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 自动装配rabbit模板，用来发送消息</span></span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> RabbitTemplate rabbitTemplate;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">sendMessage</span><span class="params">(Object message)</span> </span>&#123;</span><br><span class="line">        logger.info(<span class="string">"开始消息发送: ------------------------------------------------------------------------------------"</span>);</span><br><span class="line">        SimpleDateFormat sf = <span class="keyword">new</span> SimpleDateFormat(<span class="string">"yyyy-MM-dd HH:mm:ss"</span>);</span><br><span class="line">        <span class="comment">//发送延迟消息</span></span><br><span class="line">        <span class="keyword">for</span> (<span class="keyword">int</span> i = <span class="number">0</span>; i &lt; <span class="number">5</span>; i ++) &#123;</span><br><span class="line">            rabbitTemplate.convertAndSend(<span class="string">"delay.exchange"</span>, <span class="string">"cache.queue"</span>, message,</span><br><span class="line">                    message1 -&gt; &#123;</span><br><span class="line">                        <span class="comment">//设置消息持久化</span></span><br><span class="line">                        message1.getMessageProperties().setDeliveryMode(MessageDeliveryMode.PERSISTENT);</span><br><span class="line">                        logger.info(<span class="string">"消息已发送: &#123;&#125;"</span>, sf.format(<span class="keyword">new</span> Date()));</span><br><span class="line">                        <span class="keyword">return</span> message1;</span><br><span class="line">                    &#125;);</span><br><span class="line">            <span class="keyword">int</span> randomInt = <span class="keyword">new</span> Random().nextInt(<span class="number">4</span>) + <span class="number">1</span>;</span><br><span class="line">            <span class="keyword">try</span> &#123;</span><br><span class="line">                <span class="comment">// 随机间隔时间1-5s发送消息</span></span><br><span class="line">                Thread.currentThread().sleep(randomInt * <span class="number">1000</span>);</span><br><span class="line">            &#125; <span class="keyword">catch</span> (InterruptedException e) &#123;</span><br><span class="line">                e.printStackTrace();</span><br><span class="line">            &#125;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="MessageConsumerService接口"><a href="#MessageConsumerService接口" class="headerlink" title="MessageConsumerService接口"></a>MessageConsumerService接口</h3><p>　　消息消费接口：</p>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.delayrabbitmq.demo.service;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Channel;</span><br><span class="line"><span class="keyword">import</span> org.springframework.amqp.core.Message;</span><br><span class="line"></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">interface</span> <span class="title">MessageConsumerService</span> </span>&#123;</span><br><span class="line">    <span class="function"><span class="keyword">void</span> <span class="title">onMessage</span><span class="params">(Message message, Channel channel)</span> <span class="keyword">throws</span> Exception</span>;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.delayrabbitmq.demo.service.impl;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.delayrabbitmq.demo.service.MessageConsumerService;</span><br><span class="line"><span class="keyword">import</span> com.rabbitmq.client.Channel;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.Logger;</span><br><span class="line"><span class="keyword">import</span> org.slf4j.LoggerFactory;</span><br><span class="line"><span class="keyword">import</span> org.springframework.amqp.core.Message;</span><br><span class="line"><span class="keyword">import</span> org.springframework.amqp.rabbit.annotation.RabbitListener;</span><br><span class="line"><span class="keyword">import</span> org.springframework.stereotype.Component;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> java.text.SimpleDateFormat;</span><br><span class="line"><span class="keyword">import</span> java.util.Date;</span><br><span class="line"></span><br><span class="line"><span class="meta">@Component</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">MessageConsumerServiceImpl</span> <span class="keyword">implements</span> <span class="title">MessageConsumerService</span> </span>&#123;</span><br><span class="line">    <span class="keyword">private</span> Logger logger = LoggerFactory.getLogger(MessageConsumerServiceImpl.class);</span><br><span class="line"></span><br><span class="line">    <span class="comment">// 监听，消费执行队列的消息</span></span><br><span class="line">    <span class="meta">@RabbitListener</span>(queues = <span class="string">"execute.queue"</span>)</span><br><span class="line">    <span class="meta">@Override</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">onMessage</span><span class="params">(Message message, Channel channel)</span> <span class="keyword">throws</span> Exception </span>&#123;</span><br><span class="line">        logger.info(<span class="string">"开始处理死信:&#123;&#125; -----------------------------------------------------------------"</span>, <span class="keyword">new</span> String(message.getBody()));</span><br><span class="line">        SimpleDateFormat sf = <span class="keyword">new</span> SimpleDateFormat(<span class="string">"yyyy-MM-dd HH:mm:ss"</span>);</span><br><span class="line">        <span class="keyword">if</span> (message != <span class="keyword">null</span>) &#123;</span><br><span class="line">            <span class="keyword">long</span> deliveryTag = message.getMessageProperties().getDeliveryTag();</span><br><span class="line">            logger.info(<span class="string">"死信处理完毕: &#123;&#125;"</span>, sf.format(<span class="keyword">new</span> Date()));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h3 id="测试类"><a href="#测试类" class="headerlink" title="测试类"></a>测试类</h3><figure class="highlight java"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line"><span class="keyword">package</span> com.delayrabbitmq.demo;</span><br><span class="line"></span><br><span class="line"><span class="keyword">import</span> com.delayrabbitmq.demo.service.MessageProducerService;</span><br><span class="line"><span class="keyword">import</span> org.junit.Test;</span><br><span class="line"><span class="keyword">import</span> org.junit.runner.RunWith;</span><br><span class="line"><span class="keyword">import</span> org.springframework.amqp.core.Message;</span><br><span class="line"><span class="keyword">import</span> org.springframework.amqp.core.MessageProperties;</span><br><span class="line"><span class="keyword">import</span> org.springframework.beans.factory.annotation.Autowired;</span><br><span class="line"><span class="keyword">import</span> org.springframework.boot.test.context.SpringBootTest;</span><br><span class="line"><span class="keyword">import</span> org.springframework.test.context.junit4.SpringRunner;</span><br><span class="line"></span><br><span class="line"><span class="meta">@RunWith</span>(SpringRunner.class)</span><br><span class="line"><span class="meta">@SpringBootTest</span></span><br><span class="line"><span class="keyword">public</span> <span class="class"><span class="keyword">class</span> <span class="title">DemoApplicationTests</span> </span>&#123;</span><br><span class="line">    <span class="meta">@Autowired</span></span><br><span class="line">    <span class="keyword">private</span> MessageProducerService messageProducerService;</span><br><span class="line"></span><br><span class="line">    <span class="meta">@Test</span></span><br><span class="line">    <span class="function"><span class="keyword">public</span> <span class="keyword">void</span> <span class="title">contextLoads</span><span class="params">()</span> </span>&#123;</span><br><span class="line">        MessageProperties messageProperties = <span class="keyword">new</span> MessageProperties();</span><br><span class="line">        Message message = <span class="keyword">new</span> Message(<span class="string">"hello"</span>.getBytes(), messageProperties);</span><br><span class="line">        messageProducerService.sendMessage(message);</span><br><span class="line">        <span class="comment">// 防止测试的时候发送完消息直接退出</span></span><br><span class="line">        <span class="keyword">while</span> (<span class="keyword">true</span>) &#123;&#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<h2 id="总结"><a href="#总结" class="headerlink" title="总结"></a>总结</h2><p>　　Rabbitmq通过TTL的设置和死信的转发设置能简单的实现延迟队列的效果，但是也仅此而已，局限性非常大，无法像ScheduledThreadPoolExecutor一样进行丰富的设置。但这个Demo也有存在的意义，可以熟悉消息队列的消息传递规则和应用。</p>
 
       
     </div>
@@ -468,7 +489,7 @@
   </li>
   <li class="post-copyright-link">
     <strong>本文链接：</strong>
-    <a href="http://blog.duriamuk.top/2018/09/28/top/" title="公告">http://blog.duriamuk.top/2018/09/28/top/</a>
+    <a href="http://blog.duriamuk.top/2018/10/20/DelayQueueByRabbitmq/" title="用Rabbitmq实现延迟队列">http://blog.duriamuk.top/2018/10/20/DelayQueueByRabbitmq/</a>
   </li>
   <li class="post-copyright-license">
     <strong>版权声明： </strong>
@@ -481,6 +502,16 @@
 
     <footer class="post-footer">
       
+        <div class="post-tags">
+          
+            <a href="/tags/线程池/" rel="tag">
+            <i class="fa fa-tag"></i> 线程池</a>
+          
+            <a href="/tags/消息队列/" rel="tag">
+            <i class="fa fa-tag"></i> 消息队列</a>
+          
+        </div>
+      
 
       
       
@@ -490,8 +521,8 @@
         <div class="post-nav">
           <div class="post-nav-next post-nav-item">
             
-              <a href="/2018/09/28/ThreadPoolExecutor/" rel="next" title="ThreadPoolExecutor">
-                <i class="fa fa-chevron-left"></i> ThreadPoolExecutor
+              <a href="/2018/10/13/ScheduledThreadPoolExecutor/" rel="next" title="ScheduledThreadPoolExecutor">
+                <i class="fa fa-chevron-left"></i> ScheduledThreadPoolExecutor
               </a>
             
           </div>
@@ -499,10 +530,6 @@
           <span class="post-nav-divider"></span>
 
           <div class="post-nav-prev post-nav-item">
-            
-              <a href="/2018/10/13/ScheduledThreadPoolExecutor/" rel="prev" title="ScheduledThreadPoolExecutor">
-                ScheduledThreadPoolExecutor <i class="fa fa-chevron-right"></i>
-              </a>
             
           </div>
         </div>
@@ -586,8 +613,17 @@
       
 
       
+        <ul class="sidebar-nav motion-element">
+          <li class="sidebar-nav-toc sidebar-nav-active" data-target="post-toc-wrap">
+            文章目录
+          </li>
+          <li class="sidebar-nav-overview" data-target="site-overview-wrap">
+            站点概览
+          </li>
+        </ul>
+      
 
-      <section class="site-overview-wrap sidebar-panel sidebar-panel-active">
+      <section class="site-overview-wrap sidebar-panel">
         <div class="site-overview">
           <div class="site-author motion-element" itemprop="author" itemscope itemtype="http://schema.org/Person">
             
@@ -678,6 +714,22 @@
         </div>
       </section>
 
+      
+      <!--noindex-->
+        <section class="post-toc-wrap motion-element sidebar-panel sidebar-panel-active">
+          <div class="post-toc">
+
+            
+              
+            
+
+            
+              <div class="post-toc-content"><ol class="nav"><li class="nav-item nav-level-2"><a class="nav-link" href="#实现原理"><span class="nav-text">实现原理</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#死信（DL：Dead-Letter）"><span class="nav-text">死信（DL：Dead Letter）</span></a></li><li class="nav-item nav-level-2"><a class="nav-link" href="#Demo代码实例"><span class="nav-text">Demo代码实例</span></a><ol class="nav-child"><li class="nav-item nav-level-3"><a class="nav-link" href="#Rabbitmq配置文件"><span class="nav-text">Rabbitmq配置文件</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MessageProducerService接口"><span class="nav-text">MessageProducerService接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#MessageConsumerService接口"><span class="nav-text">MessageConsumerService接口</span></a></li><li class="nav-item nav-level-3"><a class="nav-link" href="#测试类"><span class="nav-text">测试类</span></a></li></ol></li><li class="nav-item nav-level-2"><a class="nav-link" href="#总结"><span class="nav-text">总结</span></a></li></ol></div>
+            
+
+          </div>
+        </section>
+      <!--/noindex-->
       
 
       
